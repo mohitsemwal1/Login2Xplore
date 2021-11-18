@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
@@ -15,7 +14,6 @@ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script
 src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
 </head>
 <body>
 <div class="container">
@@ -40,10 +38,10 @@ placeholder="Enter Employee Email" name="empEmail">
 <input type="button" class="btn btn-primary" id="empSave" value="Save"
 onclick="saveEmployee();">
 </form>
-
 </div>
 <script>
-$("#empId").focus();function validateAndGetFormData() {
+$("#empId").focus();
+function validateAndGetFormData() {
 var empIdVar = $("#empId").val();
 if (empIdVar === "") {
 alert("Employee ID Required Value");
@@ -69,28 +67,44 @@ empEmail: empEmailVar,
 };
 return JSON.stringify(jsonStrObj);
 }
-
+// This method is used to create PUT Json request.
+function createPUTRequest(connToken, jsonObj, dbName, relName) {
+var putRequest = "{\n"
++ "\"token\" : \""
++ connToken
++ "\","
++ "\"dbName\": \""
++ dbName
++ "\",\n" + "\"cmd\" : \"PUT\",\n"
++ "\"rel\" : \""
++ relName + "\","
++ "\"jsonStr\": \n"
++ jsonObj
++ "\n"
++ "}";
+return putRequest;
+}
 
 function resetForm() {
-$("#empId").val("");
+$("#empId").val("")
 $("#empName").val("");
 $("#empEmail").val("");
 $("#empId").focus();
 }
-function saveEmployee() {var jsonStr = validateAndGetFormData();
+function saveEmployee() {
+var jsonStr = validateAndGetFormData();
 if (jsonStr === "") {
 return;
 }
 var putReqStr = createPUTRequest("90938607|-31948825643518859|90946805",jsonStr, "md", "nb");
 alert(putReqStr);
 jQuery.ajaxSetup({async: false});
-var resultObj = executeCommandAtGivenBaseUrl(putReqStr,"http://api.login2explore.com:5577", "/api/iml");
+var resultObj = executeCommand(putReqStr,
+"http://api.login2explore.com:5577", "/api/iml");
 alert(JSON.stringify(resultObj));
 jQuery.ajaxSetup({async: true});
 resetForm();
 }
-
-
 </script>
 </body>
 </html>
